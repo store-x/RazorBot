@@ -55,7 +55,6 @@ async def list_chats(client: Client, message: Message):
 @bot.on_callback_query(filters.regex(r"^list_chats"))
 async def channel_callback(client: Client, callback_query: CallbackQuery):
     data = callback_query.data.split("_")
-    
     if len(data) == 3:
         channel_id = int(data[2])
         channels = await list_pchat()
@@ -66,8 +65,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
                    f"💰 **Price:** ₹{channel['price']}\n" \
                    f"👥 **Users Purchased:** {len(channel['users_purchased'])}\n"
             await callback_query.message.edit_text(text)
-        else:
-            await callback_query.answer("Channel not found.")
+        else: await callback_query.answer("Channel not found.")
     elif len(data) == 4:
         current_page = int(data[3])
         channels = await list_pchat()
