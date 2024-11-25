@@ -1,7 +1,7 @@
 from typing import List
 from pyrogram import InlineKeyboardMarkup, InlineKeyboardButton
 
-async def paginate(ch_data: List[dict], max_btn_per_page: int, current_page: int = 1, cb_var: str) -> InlineKeyboardMarkup:
+async def paginate(ch_data: List[dict], max_btn_per_page: int, current_page: int = 1, cb_var: str = None) -> InlineKeyboardMarkup:
     total_channels = len(ch_data)
     total_pages = (total_channels + max_btn_per_page - 1) // max_btn_per_page
     start_index = (current_page - 1) * max_btn_per_page
