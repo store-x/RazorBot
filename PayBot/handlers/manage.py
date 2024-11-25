@@ -3,7 +3,7 @@ from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineK
 from PayBot import bot, ADMINS
 from database import add_pchat, remove_pchat, list_pchat, chat_exists
 from pyrogram.errors import UserNotParticipant
-from utils import is_bot_admin
+from utils import is_bot_admin, paginate
 
 
 @bot.on_message(filters.command("add_chat") & filters.user(ADMINS))
