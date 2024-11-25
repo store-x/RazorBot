@@ -17,3 +17,9 @@ async def chat_exists(channel_id: int):
     
 async def list_pchat():
     return await channels.find({}).to_list(length=None)
+
+async def edit_pchat_field(channel_id: int, field: str, new_value: str):
+    update_data = {f"${field}": new_value}
+    await channels.update_one(
+        {"channel_id": channel_id},
+        {"$set": update_data})
