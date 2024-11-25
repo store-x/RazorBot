@@ -56,7 +56,7 @@ async def list_chats(client: Client, message: Message):
 async def channel_callback(client: Client, callback_query: CallbackQuery):
     data = callback_query.data.split("_")
     
-    if len(data) == 2:
+    if len(data) == 3:
         channel_id = int(data[1])
         channels = await list_pchat()
         channel = next((ch for ch in channels if ch['channel_id'] == channel_id), None)
@@ -68,7 +68,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
             await callback_query.message.edit_text(text)
         else:
             await callback_query.answer("Channel not found.")
-    elif len(data) == 3:
+    elif len(data) == 4:
         current_page = int(data[2])
         channels = await list_pchat()
         markup = await paginate(channels, max_btn_per_page=5, current_page=current_page, cb_var="list_chats")
