@@ -15,6 +15,6 @@ class Settings:
     MAX_CHANNELS_PER_PAGE = int(os.getenv("MAX_CHANNELS_PER_PAGE", 5))  # Default is 5 channels per page
     PAYMENT_TIMEOUT_MINUTES = int(os.getenv("PAYMENT_TIMEOUT_MINUTES", 15))  # Default is 15 minutes
     # Other Settings
-    ADMIN_IDS = list(map(int, os.getenv("ADMIN_IDS", '22,3').split(",")))  # Comma-separated admin user ID
+    ADMINS = list(map(int, os.getenv("ADMIN_IDS", '22,3').split(",")))  # Comma-separated admin user ID
     LOG_GROUP = 7594
 
