@@ -46,13 +46,28 @@ async def remove_chat(client: Client, message: Message):
 @bot.on_message(filters.command("list_chats") & filters.user(ADMINS))
 async def list_chats(client: Client, message: Message):
     channels = await list_pchat()
-    if not channels:
-        await message.reply("No channels available.")
-        return
-    text = "📋 **Channel List:**\n"
-    for ch in channels:
-        text += f"\n🔹 **Name:** {ch['name']}\n" \
-                f"💬 **ID:** {ch['channel_id']}\n" \
-                f"💰 **Price:** ₹{ch['price']}\n" \
-                f"👥 **Users Purchased:** {len(ch['users_purchased'])}\n"
-    await message.reply(text)
+    if not channels: 
+        return await message.reply("No channels available.")
+    markup = await paginate(channels, max_btn_per_page=5, current_page=1, cb_var="list_chats")
+    await message.reply("📋 **Choose from below Channel List:**", reply_markup=markup)
+
+
+@bot.on_callback_query(filters.regex(r"^channel_"))
+async def channel_callback(client: Client, callback_query: CallbackQuery):
+    data = callback_query.data.split("_")
+    if len(data) == 2:  
+        channel_id = int(data[1])
+        channel = await get_channel_details(channel_id)  
+        if channel:
+            text = f"🔹 **Name:** {channel['name']}\n" \
+                   f"💬 **ID:** {channel['channel_id']}\n" \
+                   f"💰 **Price:** ₹{channel['price']}\n" \
+                   f"👥 **Users Purchased:** {len(channel['users_purchased'])}\n"
+            await callback_query.message.edit_text(text)
+        else:
+            await callback_query.answer("Channel not found.")
+    elif len(data) == 3:  
+        current_page = int(data[2])
+        channels = await list_pchat()
+        markup = await paginate(channels, max_btn_per_page=5, current_page=current_page, cb_var="channel")
+        await callback_query.message.edit_reply_markup(markup)
