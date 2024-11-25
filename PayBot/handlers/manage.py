@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from PayBot import bot, ADMINS
 from database import add_pchat, remove_pchat, list_pchat, chat_exists
 from pyrogram.errors import UserNotParticipant
