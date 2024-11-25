@@ -64,10 +64,41 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
                    f"💬 **ID:** {channel['channel_id']}\n" \
                    f"💰 **Price:** ₹{channel['price']}\n" \
                    f"👥 **Users Purchased:** {len(channel['users_purchased'])}\n"
-            await callback_query.message.edit_text(text)
-        else: await callback_query.answer("Channel not found.")
+            markup = InlineKeyboardMarkup([
+                [InlineKeyboardButton("🔙 Back", callback_data="list_chats_back_1")],
+                [InlineKeyboardButton("✏️ Edit Name", callback_data=f"edit_name_{channel_id}"),
+                 InlineKeyboardButton("✏️ Edit Price", callback_data=f"edit_price_{channel_id}")]
+            ])
+            await callback_query.message.edit_text(text, reply_markup=markup)
+        else: 
+            await callback_query.answer("Channel not found.")
     elif len(data) == 4:
         current_page = int(data[3])
         channels = await list_pchat()
         markup = await paginate(channels, max_btn_per_page=5, current_page=current_page, cb_var="list_chats")
         await callback_query.message.edit_reply_markup(markup)
+
+
+@bot.on_callback_query(filters.regex(r"^edit_(name|price)_\d+$"))
+async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
+    data = callback_query.data.split("_")
+    action = data[1]
+    channel_id = int(data[2])
+    channels = await list_pchat()
+    channel = next((ch for ch in channels if ch['channel_id'] == channel_id), None)
+    if not channel:
+        return await callback_query.answer("Channel not found.", show_alert=True)
+    if action == "name":
+        await callback_query.message.edit_text("✏️ Send the new name for this channel:")
+        name_message = await client.listen(callback_query.message.chat.id)
+        new_name = name_message.text
+        await remove_pchat(channel_id)
+        await add_pchat(new_name, channel_id, channel['price'])
+        await callback_query.message.reply(f"✅ Channel name updated to: {new_name}")
+    elif action == "price":
+        await callback_query.message.edit_text("✏️ Send the new price for this channel:")
+        price_message = await client.listen(callback_query.message.chat.id)
+        new_price = int(price_message.text)
+        await remove_pchat(channel_id)
+        await add_pchat(channel['name'], channel_id, new_price)
+        await callback_query.message.reply(f"✅ Channel price updated to: ₹{new_price}")
