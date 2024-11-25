@@ -12,5 +12,8 @@ async def add_pchat(name: str, channel_id: int, price: int):
 async def remove_pchat(channel_id: int):
     await channels.delete_one({"channel_id": channel_id})
 
+async def chat_exists(channel_id: int):
+    return await channels.find_one({"channel_id": channel_id})
+    
 async def list_pchat():
     return await channels.find({}).to_list(length=None)
