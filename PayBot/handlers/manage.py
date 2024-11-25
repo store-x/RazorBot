@@ -1,7 +1,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from PayBot import bot, ADMINS
-from database import add_pchat, remove_pchat, list_pchat, chat_exists
+from database import (add_pchat, 
+                      remove_pchat, 
+                      list_pchat, 
+                      chat_exists, 
+                      edit_pchat_field)
 from pyrogram.errors import UserNotParticipant
 from utils import is_bot_admin, paginate
 
@@ -92,13 +96,12 @@ async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
         await callback_query.message.edit_text("✏️ Send the new name for this channel:")
         name_message = await client.listen(callback_query.message.chat.id)
         new_name = name_message.text
-        await remove_pchat(channel_id)
-        await add_pchat(new_name, channel_id, channel['price'])
+        await edit_pchat_field(channel_id, "name", new_name)
         await callback_query.message.reply(f"✅ Channel name updated to: {new_name}")
     elif action == "price":
         await callback_query.message.edit_text("✏️ Send the new price for this channel:")
         price_message = await client.listen(callback_query.message.chat.id)
         new_price = int(price_message.text)
-        await remove_pchat(channel_id)
-        await add_pchat(channel['name'], channel_id, new_price)
+        await edit_pchat_field(channel_id, "price", new_price)
         await callback_query.message.reply(f"✅ Channel price updated to: ₹{new_price}")
+
