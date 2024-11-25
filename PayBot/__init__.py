@@ -37,6 +37,7 @@ BotDB = db["BOT_DB"]
 
 
 LOG_GROUP = Settings.LOG_GROUP
+ADMINS = Settings.ADMINS
 
 async def cbot_bot():
     global BOT_ID, BOT_NAME, BOT_USERNAME
