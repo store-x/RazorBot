@@ -4,7 +4,7 @@ import sys
 import logging
 import logging.handlers as handlers
 from motor import motor_asyncio
-from pyrogram import Client
+from pyromod import Client
 from config import Settings
 
 
