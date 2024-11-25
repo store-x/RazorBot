@@ -85,6 +85,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
 
 @bot.on_callback_query(filters.regex(r"^edit_(name|price)_\d+$"))
 async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
+    print('ok')
     data = callback_query.data.split("_")
     action = data[1]
     channel_id = int(data[2])
