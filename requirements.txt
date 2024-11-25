@@ -1,0 +1,6 @@
+pyrogram
+tgcrypto
+pyromod
+razorpay
+python-dotenv
+motor==0.2
