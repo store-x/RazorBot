@@ -6,9 +6,8 @@ async def paginate(ch_data: List[dict], max_btn_per_page: int, current_page: int
     total_pages = (total_channels + max_btn_per_page - 1) // max_btn_per_page
     start_index = (current_page - 1) * max_btn_per_page
     end_index = min(start_index + max_btn_per_page, total_channels)
-    
     buttons = [
-        InlineKeyboardButton(name, callback_data=f"{cb_var}_{channel['channel_id']}")
+        InlineKeyboardButton(channel['name'], callback_data=f"{cb_var}_{channel['channel_id']}")
         for channel in ch_data[start_index:end_index]
     ]
     
