@@ -1,0 +1,22 @@
+{
+  "name": "RazorPay Bot",
+  "description": "A telegram shop bot built with Python and MongoDB",
+  "repository": "https://github.com/store-x/RazorBot",
+  "keywords": ["bot", "python", "mongodb"],
+  "env": {
+    "API_ID": "27830295",
+    "API_HASH": "af8551aef6d2ac9c4e0e67e9c95091f5",
+    "LOG_GROUP": "-1002035752353",
+    "MONGO_URI": "mongodb+srv://fallen3bots:15406578@cluster0.tay3n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "ADMINS": "1338408261"
+  },
+  "scripts": {
+    "start": "python3 RazorBot"
+  },
+   "buildpacks": [
+          {
+              "url": "heroku/python"
+          }
+      ],
+    "stack": "heroku-22"
+}
