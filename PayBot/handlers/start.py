@@ -40,3 +40,7 @@ async def browse_channels_callback(client: Client, callback_query: CallbackQuery
         channels = await list_pchat()
         markup = await paginate(channels, max_btn_per_page=MCPP, current_page=current_page, cb_var="browse_channels")
         await callback_query.message.edit_reply_markup(markup)
+
+@bot.on_callback_query()
+async def print_updt(c, cq):
+    print(str(cq))
