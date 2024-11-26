@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from PayBot import bot, BOT_NAME
+from PayBot import bot, BOT_NAME, MCPP
 from database import list_pchat
 from utils import paginate
 
@@ -9,7 +9,7 @@ async def start_in_group(client: Client, message: Message):
     await message.reply(
         "👋 **Hello!**\n\nThis bot works only in private chats. Please message me directly to get started.",
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🤖 Message Me", url=f"t.me/{bot.me.username}")]])
+            [[InlineKeyboardButton("🤖 Message Me", url=f"t.me/{bot.me.username}/start")]])
     )
 
 @bot.on_message(filters.command("start") & filters.private)
@@ -33,10 +33,10 @@ async def browse_channels_callback(client: Client, callback_query: CallbackQuery
         channels = await list_pchat()
         if not channels:
             return await callback_query.answer("No channels available.", show_alert=True)
-        markup = await paginate(channels, max_btn_per_page=5, current_page=1, cb_var="browse_channels")
+        markup = await paginate(channels, max_btn_per_page=MCPP, current_page=1, cb_var="browse_channels")
         await callback_query.message.edit_text("📋 **Explore Available Channels:**", reply_markup=markup)
     elif len(data) == 4:
         current_page = int(data[3])
         channels = await list_pchat()
-        markup = await paginate(channels, max_btn_per_page=5, current_page=current_page, cb_var="browse_channels")
+        markup = await paginate(channels, max_btn_per_page=MCPP, current_page=current_page, cb_var="browse_channels")
         await callback_query.message.edit_reply_markup(markup)
