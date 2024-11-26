@@ -83,7 +83,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
         await callback_query.message.edit_text("📋 **Choose from below Channel List:**", reply_markup=markup)
 
 
-@bot.on_callback_query(filters.regex(r"^edit_(name|price)_\d+$"))
+@bot.on_callback_query(filters.regex(r"^edit_(name|price)_-?\d+$"))
 async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
     print('ok')
     data = callback_query.data.split("_")
