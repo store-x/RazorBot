@@ -1,4 +1,4 @@
-from pyrogram import Client, types
+from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
 
 from .pagination import paginate 
@@ -18,7 +18,7 @@ async def is_bot_admin(client: Client, chat_id: int) -> bool:
 async def listen(client: Client, user_id: int, a_type: int | str, d_msg: str, e_msg: str, allowed_values: set = None):
     await client.send_message(user_id, d_msg)
     while True:
-        msg: types.Message = await client.listen(chat_id=user_id)
+        msg = await client.listen(chat_id=user_id)
         if msg.text is None:
             await client.send_message(user_id, e_msg)
             continue
@@ -26,7 +26,7 @@ async def listen(client: Client, user_id: int, a_type: int | str, d_msg: str, e_
             await client.send_message(user_id, e_msg)
             continue
         if isinstance(a_type, int):
-            if not msg.text.replace('-100', '').isdigit():
+            if not msg.text.isdigit():
                 await client.send_message(user_id, e_msg)
                 continue
             return int(msg.text)
