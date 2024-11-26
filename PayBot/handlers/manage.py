@@ -1,20 +1,16 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from PayBot import bot, ADMINS, MCPP
-from database import (add_pchat, 
-                      remove_pchat, 
-                      list_pchat, 
-                      chat_exists, 
-                      edit_pchat_field)
-from pyrogram.errors import UserNotParticipant
-from utils import is_bot_admin, paginate
+from database import (add_pchat, remove_pchat, list_pchat, 
+                      chat_exists,  edit_pchat_field)
+from utils import is_bot_admin, paginate, listen
 
 
 @bot.on_message(filters.command("add_chat") & filters.user(ADMINS))
 async def add_chat(client: Client, message: Message):
-    await message.reply("Please send the channel ID:")
-    channel_id_message = await client.listen(message.chat.id)
-    channel_id = int(channel_id_message.text)
+    m = "Please send the channel ID:"
+    e = "Invalid {}, enter again:"
+    channel_id = await listen(client, message.chat.id, a_type=1,d_msg= m, e_msg=e.format('channel ID'))
     if not await is_bot_admin(client, channel_id):
         await message.reply("The bot needs to be an admin in the channel. Please make it an admin first.")
         return
@@ -23,16 +19,14 @@ async def add_chat(client: Client, message: Message):
         return
     chat_info = await client.get_chat(channel_id)
     default_name = chat_info.title
-    await message.reply(f"The default name for this chat is: '{default_name}'. Do you want to use it? (yes/no)")
-    name_response = await client.listen(message.chat.id)
-    if name_response.text.lower() == "no":
-        await message.reply("Please send the new name for the chat:")
-        name_message = await client.listen(message.chat.id)
-        name = name_message.text
+    m = f"The default name for this chat is: '{default_name}'. Do you want to use it? (yes/no)"
+    name_response = await listen(client, message.chat.id, a_type='a', d_msg=m, e_msg=e.format('response(only yes/no)'), allowed_values={'yes', 'no'})
+    if name_response.lower() == "no":
+        m = "Please send the new name for the chat:"
+        name = await listen(client, message.chat.id, a_type='a', d_msg=m, e_msg=e.format('chat name'))
     else: name = default_name
-    await message.reply("Please send the price:")
-    price_message = await client.listen(message.chat.id)
-    price = int(price_message.text)
+    m = "Please send the price:"
+    price= await listen(client, message.chat.id, a_type=1, d_msg=m, e_msg=e.format('price'))
     await add_pchat(name, channel_id, price)
     await message.reply(f"✅ Added channel: {name} (ID: {channel_id}) for ₹{price}")
 
@@ -85,7 +79,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
 
 @bot.on_callback_query(filters.regex(r"^edit_(name|price)_-?\d+$"))
 async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
-    print('ok')
+    e = "Invalid {}, enter again:"
     data = callback_query.data.split("_")
     action = data[1]
     channel_id = int(data[2])
@@ -94,15 +88,15 @@ async def edit_channel_callback(client: Client, callback_query: CallbackQuery):
     if not channel:
         return await callback_query.answer("Channel not found.", show_alert=True)
     if action == "name":
-        await callback_query.message.edit_text("✏️ Send the new name for this channel:")
-        name_message = await client.listen(callback_query.message.chat.id)
+        await callback_query.message.delete()
+        m = "✏️ Send the new name for this channel:"
+        name_message = await listen(client, callback_query.message.chat.id, a_type='a', d_msg=m, e_msg=e.format('name'))
         new_name = name_message.text
         await edit_pchat_field(channel_id, "name", new_name)
         await callback_query.message.reply(f"✅ Channel name updated to: {new_name}")
     elif action == "price":
-        await callback_query.message.edit_text("✏️ Send the new price for this channel:")
-        price_message = await client.listen(callback_query.message.chat.id)
-        new_price = int(price_message.text)
+        await callback_query.message.delete()
+        m = "✏️ Send the new price for this channel:"
+        new_price = await listen(client, callback_query.message.chat.id, a_type=1, d_msg=m, e_msg=e.format('price'))
         await edit_pchat_field(channel_id, "price", new_price)
         await callback_query.message.reply(f"✅ Channel price updated to: ₹{new_price}")
-
