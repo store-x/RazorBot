@@ -29,7 +29,8 @@ async def start_in_private(client: Client, message: Message):
 @bot.on_callback_query(filters.regex(r"^browse_channels"))
 async def browse_channels_callback(client: Client, callback_query: CallbackQuery):
     data = callback_query.data.split("_")
-    current_page = int(data[3] or 1)
+    try: current_page = int(data[3])
+    except: current_page = 1
     channels = await list_pchat()
     if not channels:
         return await callback_query.answer("No channels available.", show_alert=True)
