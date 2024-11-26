@@ -79,7 +79,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
     elif len(data) == 4:
         current_page = int(data[3])
         channels = await list_pchat()
-        markup = await paginate(channels, max_btn_per_page=5, current_page=current_page, cb_var="list_chats")
+        markup = await paginate(channels, max_btn_per_page=2, current_page=current_page, cb_var="list_chats")
         await callback_query.message.edit_reply_markup(markup)
 
 
