@@ -24,8 +24,7 @@ bot = Client(
     ":cbot:",
     api_id=Settings.API_ID,
     api_hash=Settings.API_HASH,
-    bot_token=Settings.BOT_TOKEN,
-    # plugins = {"root": "Modules/plugins"}
+    bot_token=Settings.BOT_TOKEN
 )
 
 
@@ -38,6 +37,7 @@ BotDB = db["BOT_DB"]
 
 LOG_GROUP = Settings.LOG_GROUP
 ADMINS = Settings.ADMINS
+MCPP = Settings.MAX_CHANNELS_PER_PAGE
 
 async def cbot_bot():
     global BOT_ID, BOT_NAME, BOT_USERNAME
