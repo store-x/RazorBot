@@ -80,7 +80,7 @@ async def channel_callback(client: Client, callback_query: CallbackQuery):
         current_page = int(data[3])
         channels = await list_pchat()
         markup = await paginate(channels, max_btn_per_page=MCPP, current_page=current_page, cb_var="list_chats")
-        await callback_query.message.edit_reply_markup(markup)
+        await callback_query.message.edit_text("📋 **Choose from below Channel List:**", reply_markup=markup)
 
 
 @bot.on_callback_query(filters.regex(r"^edit_(name|price)_\d+$"))
